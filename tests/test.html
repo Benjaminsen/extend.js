@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<!--<script src="misc.js" ></script>-->
+		<script src="extend.min.js" ></script>
+	</head>
+	<body>
+
+	</Body>
+	<script>
+	function WriteUnitTest(success, text){
+		document.body.innerHTML += '<div style="color:'+(success?"#00BB00":"#FF0000")+'">'+text+'</div>'
+	}
+
+	//UNIT TESTS!
+	//They are ugly but they work
+
+	Class.extend(function    myClass(){
+		this.test = 2;
+		this.constructor = function(){
+			this.myfunction("----");
+		}
+		this.myfunction = function(passed){
+			return passed;
+		}
+		this.wrapper = function(passed){
+			return this.myfunction(passed)
+		}
+		this.toptest = function(passed){
+			return passed + "-"
+		}
+	})
+
+	myClass.extend(function myClass2(){
+		this.toptest = function(passed){
+			return this.super.toptest(passed) + "*";
+		}
+	})
+
+	myClass2.extend(function myClass3(){
+		this.myfunction = function(passed){
+			return "123" + this.super.myfunction(passed);
+		}
+		this.superduper = function(passed){
+			return this.super.myfunction(passed);
+		}
+	})
+
+	myClass2.extend(function myClass4(){
+		this.test = 4;
+		this.myfunction = function(passed){
+			return "1234" + this.super.myfunction(passed);
+		}
+	})
+
+	myClass3.extend(function myClass5(){
+	})
+
+	Class.extend(function newClass(){
+		this.constructor = function (){
+			var that = this
+			setTimeout(function(){that.testMethod("[Instance newClass]")},1)
+		}
+		this.testMethod = function(compare){
+			WriteUnitTest(this.toString() == compare, "Testing that scope is reset for global scope execution of class methods for " + compare)
+		}
+	})
+
+	newClass.extend(function newClass2(){
+		this.constructor = function (){
+			var that = this
+			setTimeout(function(){that.testMethod("[Instance newClass2]")},1)
+		}
+	})
+
+	var didExecute = false
+	Class.extend(function PrototypeTestClass(){
+		this.constructor = function(value){
+			didExecute = value
+		}
+	})
+	PrototypeTestClass.extend(function PrototypeTestClass2(){
+	})
+	PrototypeTestClass2.extend(function PrototypeTestClass3(){
+		this.constructor = function(){
+			this.super("Success")
+		}
+	})
+
+
+	Class.extend(function RootClass(){
+		this.test = function(){
+			return  "--" + this.inner() 
+		}
+		this.inner = function(){
+			return "ERROR"			
+		}
+	})
+	RootClass.extend(function MidClass(){
+		this.test = function(){
+			return "||" + this.super.test();
+		}
+		this.inner = function(){
+			return "ERROR"
+		}
+	})
+	MidClass.extend(function ChildClass(){
+		this.inner = function(){
+			return "**"
+		}
+	})
+
+	
+
+	new newClass()
+	new newClass2()
+	WriteUnitTest(myClass.toString() == "[Class myClass]", "Testing myClass toString")
+	WriteUnitTest(myClass3.toString() == "[Class myClass3]", "Testing myClass3 toString")
+	WriteUnitTest(new myClass().toString() == "[Instance myClass]", "Testing instance of myClass toString")
+	WriteUnitTest(new myClass2().toString() == "[Instance myClass2]", "Testing instance of myClass toString lvl 2")
+	WriteUnitTest(new myClass3().toString() == "[Instance myClass3]", "Testing instance of myClass toString lvl 3")
+	WriteUnitTest(new myClass() != new myClass(), "Testing that two instances of same object is not the same")
+	WriteUnitTest(new myClass().myfunction("test") == "test", "Testing that we can call a sub method")
+	WriteUnitTest(new myClass2().myfunction("test") == "test", "Testing that level 1 inherited value is correctly inherited")
+	WriteUnitTest(new myClass3().myfunction("test") == "123test", "Testing that level 2 inherited value is correctly inherited")
+	WriteUnitTest(new myClass4().myfunction("test") == "1234test", "Testing that level 3 inherited value is correctly inherited")
+	WriteUnitTest(new myClass3() instanceof myClass3, "Testing instance of same class")
+	WriteUnitTest(new myClass3() instanceof myClass2, "Testing instance of sub class lvl 1")
+	WriteUnitTest(new myClass3() instanceof myClass, "Testing instance of sub class lvl 2")
+	WriteUnitTest(new myClass4() instanceof myClass4, "Testing instance of sub class level 3")
+	WriteUnitTest(!(new myClass3() instanceof myClass4), "Testing that classes do not inherit incorrectly")
+	WriteUnitTest(new myClass().test == 2, "Testing that simple values work")
+	WriteUnitTest(new myClass3().test == 2, "Testing that simple values are inherited")
+	WriteUnitTest(new myClass4().test == 4, "Testing that simple values can be overloaded")
+	WriteUnitTest(new myClass3().superduper("test") == "test", "Testing that Super referance is correctly maintained")
+	WriteUnitTest(new myClass3().wrapper("test") == "123test", "Testing that secound level internal method calls works")
+	WriteUnitTest(new myClass4().wrapper("test") == "1234test", "Testing that third level internal method calls works")
+	WriteUnitTest(new myClass5().toptest("") == "-*", "Validate if inherited methods does not clone incorrectly")
+	new PrototypeTestClass3()
+	WriteUnitTest(didExecute == "Success", "Testing if we can call constructor via non existing constructor overwrite")//*/
+	WriteUnitTest(new ChildClass().test() == "||--**", "Secound validation for complex scopes")
+
+
+	</script>
+</html>
