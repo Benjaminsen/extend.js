@@ -12,7 +12,9 @@ FAQ:
 <dd>
 While writing, a yet to be released HTML5 game engine, I felt a need for a better way to re-use and extend basic primitives. Over the past years I also spend a large amounts of time working with C# and ActionScript 3 and I really missed the more powerful class system from those languages.
 
+
 ExtendJS started out as a simple scope hack, allowing for code execution during prototypical class instantiation. From there it was trivial to add method and value copying and overloading and the project took of from there.
+
 
 For more than a year I revisited the project multiple times, fixing bugs and making the syntax simpler. The version existing today is far from the original version and I must have rewritten it more than five times from scratch in an attempt to simplify and resolve issues.
 </dd>
