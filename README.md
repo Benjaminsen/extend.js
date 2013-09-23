@@ -10,11 +10,15 @@ FAQ:
 The driving goal of ExtendJS are
 * Provide the simplest syntax possible, minimizing the amount of code developers needs to write.
 * Scope should always be maintained.
-* Private and public variables should be created at initialization time and be unique per instance.
-* Both methods and variables should be overridable
+* Private and public variables should be created at initialization time and be unique per class instance.
+* Both methods and variables should be overridable.
+* Small code base - the current minified version is 1.4kb.
 
 Things that does not work as well as I would like
-* There is no support for protected variabels
+* There is no support for protected variabels. 
+* There is no support for static variabels. 
+
+Suggestions for improvements and extentions are very welcome.
 
 <dl>
 <dt>JavaScript has great prototypical class inheritance, so why write this?</dt>
