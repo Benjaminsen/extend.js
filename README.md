@@ -20,6 +20,8 @@ Things that does not work as well as I would like
 
 Suggestions for improvements and extentions are very welcome.
 
+QA:
+-------------------------
 <dl>
 <dt>JavaScript has great prototypical class inheritance, so why write this?</dt>
 <dd>
