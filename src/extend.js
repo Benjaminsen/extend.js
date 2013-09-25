@@ -41,7 +41,7 @@
 		//Helper method for creating an super copied object clone
 		function cloneCopy(from, to){
 			for(var x in from){
-				if(from[x] instanceof Function && !skip[x] ){
+				if(!from.__lookupGetter__(x) && from[x] instanceof Function && !skip[x] ){
 					//Never create circular super referances.
 					to[x] = from[x].super || superCopy(from, from[x]);
 				}
