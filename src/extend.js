@@ -1,5 +1,5 @@
 /*
-	ExtendJS 0.1.0
+	ExtendJS 0.2.0
 	More info at http://extendjs.org
 
 	Copyright (c) 2013 ChrisBenjaminsen.com
