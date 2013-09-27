@@ -23,73 +23,58 @@
 	THE SOFTWARE.
 */
 (function(){
-	var skip = {constructor:true, toString:true, super:true};
-	var base = this;
+	//Helper method for creating an super copied object clone
+	function initialize(method){
+		//Recursivly execute parent methods.
+		if(method.parent !== undefined){
+			initialize.apply(this,[method.parent]);
+			this.super = cloneCopy(this,
+				superCopy(this,this.constructor)
+			);
+		}
+		method.apply(this, arguments);
+	}
+
+	//Helper method which allows for super referances.
+	function cloneCopy(from, to){
+		for(var x in from){
+			if(x != "constructor" && x != "toString" && x != "super" && !from.__lookupGetter__(x) && from[x] instanceof Function ){
+				//Never create circular super referances.
+				to[x] = from[x].super || superCopy(from, from[x]);
+			}
+		}
+		return to
+	}
+
+	function superCopy(scope, method){
+		var scopeSuper = scope.super;
+		return method.super = function(){
+			scope.super = scopeSuper;
+			return method.apply(scope, arguments);
+		}
+	}
+
+	//Create Class object
 	this.Class = function(){};
 	Class.extend = function(to){
-		function initialize(method){
-			//Recursivly execute parent methods.
-			if(method.parent){
-				initialize.apply(this,[method.parent]);
-				var ns = superCopy(this,this.constructor);
-				cloneCopy(this,ns);
-				this.super = ns;
-			}
-			method.apply(this, arguments);
-		}
-
-		//Helper method for creating an super copied object clone
-		function cloneCopy(from, to){
-			for(var x in from){
-				if(!from.__lookupGetter__(x) && from[x] instanceof Function && !skip[x] ){
-					//Never create circular super referances.
-					to[x] = from[x].super || superCopy(from, from[x]);
-				}
-			}
-		}
-
-		//Helper method which allows for super referances.
-		function superCopy(scope, method){
-			var scopeSuper = scope.super;
-			method.super = function(){
-				scope.super = scopeSuper;
-				scope.super = method.apply(scope, arguments);
-				return scope.super;
-			}
-			return method.super;
-		}
-
-		var child = function(){
+		function child(){
 			//Prevent the prototype scope set executing the constructor.
-			if(skip === arguments[0]) return;
+			if(initialize === arguments[0]) return;
 			//Create inhereted object
 			initialize.apply(this,[to]);
 			//Setup scope for class instance method calls
 			cloneCopy(this,this);
-			if(this.initializer) this.initializer.apply(this);
+			if(this.initializer !== undefined) this.initializer.apply(this);
 			this.constructor.apply(this,arguments);
 		}
 
-
-		//Validate that we defined a constructor.
-		var rt = to.toString().match(/function\s+(\w+)/i);//to.toString().match(/this\.constructor[^=]?=[^f]?function\s?(\w+)/i)
-		if(!rt || rt.length == 0) throw "You must declare a classname for " + to;
-
-		var type = rt[1] || "Unknown";
-
 		//Set prototype and constructor enabeling propper type checking.
-		child.prototype = new this(skip);
+		child.prototype = new this(initialize);
 		child.prototype.constructor = child;
 
-		//Setup inherentence path.
-		child.prototype.inheritancePath = to.inheritancePath = to.inheritancePath ? to.inheritancePath + "->" + type : type;
-		
 		//Fix tostrings
 		child.toString = function(){
-			return "[Class "+type+"]";
-		}
-		child.prototype.toString = function(){
-			return "[Instance "+type+"]";
+			return to.toString()
 		}
 
 		//Allow the child to be extended.
@@ -97,13 +82,11 @@
 		child.extend = function(target){
 			//Create parent referance and inherentence path.
 			target.parent = to;
-			target.inheritancePath = to.inheritancePath;
 			return ext.apply(child,arguments);
 		}
-
-		base[type] = child;
-		//return child
+	
+		return child
 	}
 	//Bootstrap Class by inheriting itself with empty constructor.
-	Class.extend(function Class(){this.constructor=function(){}});
+	Class = Class.extend(function(){this.constructor=function(){}});
 })()

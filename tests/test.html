@@ -14,7 +14,7 @@
 	//UNIT TESTS!
 	//They are ugly but they work
 
-	Class.extend(function    myClass(){
+	var myClass = Class.extend(function(){
 		this.test = 2;
 		this.constructor = function(){
 			this.myfunction("----");
@@ -30,13 +30,13 @@
 		}
 	})
 
-	myClass.extend(function myClass2(){
+	var myClass2 = myClass.extend(function(){
 		this.toptest = function(passed){
 			return this.super.toptest(passed) + "*";
 		}
 	})
 
-	myClass2.extend(function myClass3(){
+	var myClass3 = myClass2.extend(function(){
 		this.myfunction = function(passed){
 			return "123" + this.super.myfunction(passed);
 		}
@@ -45,49 +45,49 @@
 		}
 	})
 
-	myClass2.extend(function myClass4(){
+	var myClass4 = myClass2.extend(function(){
 		this.test = 4;
 		this.myfunction = function(passed){
 			return "1234" + this.super.myfunction(passed);
 		}
 	})
 
-	myClass3.extend(function myClass5(){
+	var myClass5 = myClass3.extend(function(){
 	})
 
-	Class.extend(function newClass(){
+	var newClass = Class.extend(function(){
 		this.constructor = function (){
 			var that = this
-			setTimeout(function(){that.testMethod("[Instance newClass]")},1)
+			setTimeout(function(){that.testMethod(that)},1)
 		}
 		this.testMethod = function(compare){
-			WriteUnitTest(this.toString() == compare, "Testing that scope is reset for global scope execution of class methods for " + compare)
+			WriteUnitTest(this == compare, "Testing that scope is reset for global scope execution")
 		}
 	})
 
-	newClass.extend(function newClass2(){
+	var newClass2 = newClass.extend(function(){
 		this.constructor = function (){
 			var that = this
-			setTimeout(function(){that.testMethod("[Instance newClass2]")},1)
+			setTimeout(function(){that.testMethod(that)},1)
 		}
 	})
 
 	var didExecute = false
-	Class.extend(function PrototypeTestClass(){
+	var PrototypeTestClass = Class.extend(function(){
 		this.constructor = function(value){
 			didExecute = value
 		}
 	})
-	PrototypeTestClass.extend(function PrototypeTestClass2(){
+	var PrototypeTestClass2 = PrototypeTestClass.extend(function(){
 	})
-	PrototypeTestClass2.extend(function PrototypeTestClass3(){
+	var PrototypeTestClass3 = PrototypeTestClass2.extend(function(){
 		this.constructor = function(){
 			this.super("Success")
 		}
 	})
 
 
-	Class.extend(function RootClass(){
+	var RootClass = Class.extend(function(){
 		this.test = function(){
 			return  "--" + this.inner() 
 		}
@@ -95,7 +95,7 @@
 			return "ERROR"			
 		}
 	})
-	RootClass.extend(function MidClass(){
+	var MidClass = RootClass.extend(function(){
 		this.test = function(){
 			return "||" + this.super.test();
 		}
@@ -104,7 +104,7 @@
 		}
 	})
 	var shouldNotBeCalled = true;
-	MidClass.extend(function ChildClass(){
+	var ChildClass = MidClass.extend(function(){
 		this.inner = function(){
 			return "**"
 		}
@@ -113,15 +113,10 @@
         });
 	})
 
-	
 
 	new newClass()
 	new newClass2()
-	WriteUnitTest(myClass.toString() == "[Class myClass]", "Testing myClass toString")
-	WriteUnitTest(myClass3.toString() == "[Class myClass3]", "Testing myClass3 toString")
-	WriteUnitTest(new myClass().toString() == "[Instance myClass]", "Testing instance of myClass toString")
-	WriteUnitTest(new myClass2().toString() == "[Instance myClass2]", "Testing instance of myClass toString lvl 2")
-	WriteUnitTest(new myClass3().toString() == "[Instance myClass3]", "Testing instance of myClass toString lvl 3")
+
 	WriteUnitTest(new myClass() != new myClass(), "Testing that two instances of same object is not the same")
 	WriteUnitTest(new myClass().myfunction("test") == "test", "Testing that we can call a sub method")
 	WriteUnitTest(new myClass2().myfunction("test") == "test", "Testing that level 1 inherited value is correctly inherited")
@@ -143,7 +138,5 @@
 	WriteUnitTest(didExecute == "Success", "Testing if we can call constructor via non existing constructor overwrite")//*/
 	WriteUnitTest(new ChildClass().test() == "||--**", "Secound validation for complex scopes")
     WriteUnitTest(shouldNotBeCalled, "Testing that getters are not being called during class cloning")
-
-
 	</script>
 </html>
