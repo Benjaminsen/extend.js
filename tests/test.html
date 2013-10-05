@@ -108,10 +108,10 @@
 		this.inner = function(){
 			return "**"
 		}
-		this.__defineGetter__("x", function(){
-			shouldNotBeCalled = false;
-        });
 	})
+
+
+
 
 
 	new newClass()
@@ -138,5 +138,13 @@
 	WriteUnitTest(didExecute == "Success", "Testing if we can call constructor via non existing constructor overwrite")//*/
 	WriteUnitTest(new ChildClass().test() == "||--**", "Secound validation for complex scopes")
     WriteUnitTest(shouldNotBeCalled, "Testing that getters are not being called during class cloning")
+
+    var bef = new Date().getTime();
+    for( var a=0;a<100000;a++){
+		var d = new myClass4()
+    }
+    console.log(new Date().getTime()-bef)
+
+
 	</script>
 </html>

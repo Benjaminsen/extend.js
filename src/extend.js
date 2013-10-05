@@ -1,5 +1,5 @@
 /*
-	ExtendJS 0.2.0
+	ExtendJS 0.2.1
 	More info at http://extendjs.org
 
 	Copyright (c) 2013 ChrisBenjaminsen.com
@@ -26,7 +26,7 @@
 	//Helper method for creating an super copied object clone
 	function initialize(method){
 		//Recursivly execute parent methods.
-		if(method.parent !== undefined){
+		if(method.parent instanceof Function){
 			initialize.apply(this,[method.parent]);
 			this.super = cloneCopy(this,
 				superCopy(this,this.constructor)
@@ -38,12 +38,12 @@
 	//Helper method which allows for super referances.
 	function cloneCopy(from, to){
 		for(var x in from){
-			if(x != "constructor" && x != "toString" && x != "super" && !from.__lookupGetter__(x) && from[x] instanceof Function ){
+			if(x !== "super" && from[x] instanceof Function){
 				//Never create circular super referances.
 				to[x] = from[x].super || superCopy(from, from[x]);
 			}
 		}
-		return to
+		return to;
 	}
 
 	function superCopy(scope, method){
@@ -59,20 +59,22 @@
 	Class.extend = function(to){
 		function child(){
 			//Prevent the prototype scope set executing the constructor.
-			if(initialize === arguments[0]) return;
-			//Create inhereted object
-			initialize.apply(this,[to]);
-			//Setup scope for class instance method calls
-			cloneCopy(this,this);
-			if(this.initializer !== undefined) this.initializer.apply(this);
-			this.constructor.apply(this,arguments);
+			if(initialize !== arguments[0]){
+				//Create inhereted object
+				initialize.apply(this,[to]);
+				//Setup scope for class instance method calls
+				cloneCopy(this,this);
+				if(this.initializer instanceof Function)
+					this.initializer.apply(this);
+				this.constructor.apply(this,arguments);
+			}
 		}
 
 		//Set prototype and constructor enabeling propper type checking.
 		child.prototype = new this(initialize);
 		child.prototype.constructor = child;
 
-		//Fix tostrings
+		//Return expected result from toString
 		child.toString = function(){
 			return to.toString()
 		}
