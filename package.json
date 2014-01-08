@@ -1,0 +1,13 @@
+{
+    "name": "extend.js",
+    "version": "v0.2.1",
+    "description": "ExtendJS extends JavaScript with a simple yet powerful class abstraction",
+    "main": "src/extend.js",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/Benjaminsen/extend.js.git"
+    },
+    "author": "Chris Benjaminsen",
+    "license": "MIT",
+    "readmeFilename": "README.md"
+}
