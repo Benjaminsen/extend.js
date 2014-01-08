@@ -1,0 +1,12 @@
+{
+  "name": "extend.js",
+  "version": "0.2.1",
+  "main": [
+    "src/extend.js"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components"
+  ]
+}
