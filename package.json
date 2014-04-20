@@ -1,6 +1,6 @@
 {
     "name": "extend.js",
-    "version": "v0.2.1",
+    "version": "v0.2.2",
     "description": "ExtendJS extends JavaScript with a simple yet powerful class abstraction",
     "main": "src/extend.js",
     "repository": {

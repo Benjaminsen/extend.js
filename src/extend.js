@@ -1,8 +1,8 @@
 /*
-	ExtendJS 0.2.1
+	ExtendJS 0.2.2
 	More info at http://extendjs.org
 
-	Copyright (c) 2013 ChrisBenjaminsen.com
+	Copyright (c) 2013+ ChrisBenjaminsen.com
 
 	Permission is hereby granted, free of charge, to any person obtaining a copy
 	of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,8 @@
 	OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 	THE SOFTWARE.
 */
-(function(){
+(function(global){
+    "use strict";
 	//Helper method for creating an super copied object clone
 	function initialize(method){
 		//Recursivly execute parent methods.
@@ -55,8 +56,8 @@
 	}
 
 	//Create Class object
-	this.Class = function(){};
-	Class.extend = function(to){
+	global.Class = function(){};
+	global.Class.extend = function ext(to){
 		function child(){
 			//Prevent the prototype scope set executing the constructor.
 			if(initialize !== arguments[0]){
@@ -80,7 +81,6 @@
 		}
 
 		//Allow the child to be extended.
-		var ext = arguments.callee;
 		child.extend = function(target){
 			//Create parent referance and inherentence path.
 			target.parent = to;
@@ -90,5 +90,7 @@
 		return child
 	}
 	//Bootstrap Class by inheriting itself with empty constructor.
-	Class = Class.extend(function(){this.constructor=function(){}});
-})()
+	global.Class = global.Class.extend(function() {
+        this.constructor=function(){}
+    });
+})(this)
