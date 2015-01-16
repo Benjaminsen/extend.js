@@ -1,5 +1,5 @@
 /*
-	ExtendJS 0.2.2
+	ExtendJS 0.2.3
 	More info at http://extendjs.org
 
 	Copyright (c) 2013+ ChrisBenjaminsen.com
@@ -39,7 +39,11 @@
 	//Helper method which allows for super referances.
 	function cloneCopy(from, to){
 		for(var x in from){
-			if(x !== "super" && from[x] instanceof Function){
+			if(	
+				x !== "super" && //Never clone the super referance
+				from[x] instanceof Function && //Only overwrite functions
+				!(from[x].prototype instanceof Class) //Never overwrite referances to classes
+			){
 				//Never create circular super referances.
 				to[x] = from[x].super || superCopy(from, from[x]);
 			}
@@ -53,6 +57,7 @@
 			scope.super = scopeSuper;
 			return method.apply(scope, arguments);
 		}
+		return method;
 	}
 
 	//Create Class object

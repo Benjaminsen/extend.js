@@ -110,10 +110,33 @@
 		}
 	})
 
+	var order = []
+	var RootClass = Class.extend(function() {
+	    this.doSomething = function() {
+	    	order.push("rd")
+	    };
+	});
 
+	var Child1 = RootClass.extend(function() {
+	    this.test = RootClass;
+	    this.constructor = function() {
+	    	order.push("c1")
+	        this.child = new this.test();
+	    };
+	    this.doSomething = function() {
+	    	order.push("1d")
+	        this.child.doSomething();
+	    }
+	});
 
+	var Child2 = Child1.extend(function() {
+	    this.constructor = function() {
+	    	order.push("c2")
+	        this.super();
+	    }
+	});
 
-
+	
 	new newClass()
 	new newClass2()
 
@@ -135,15 +158,17 @@
 	WriteUnitTest(new myClass4().wrapper("test") == "1234test", "Testing that third level internal method calls works")
 	WriteUnitTest(new myClass5().toptest("") == "-*", "Validate if inherited methods does not clone incorrectly")
 	new PrototypeTestClass3()
-	WriteUnitTest(didExecute == "Success", "Testing if we can call constructor via non existing constructor overwrite")//*/
+	WriteUnitTest(didExecute == "Success", "Testing if we can call constructor via non existing constructor overwrite")
 	WriteUnitTest(new ChildClass().test() == "||--**", "Secound validation for complex scopes")
     WriteUnitTest(shouldNotBeCalled, "Testing that getters are not being called during class cloning")
+    new Child2().doSomething();
+    WriteUnitTest(order.join("|") == "c2|c1|1d|rd", "Verifying that locally stored referances to Classes are scope safe")//*/
 
-    var bef = new Date().getTime();
+    /*var bef = new Date().getTime();
     for( var a=0;a<100000;a++){
 		var d = new myClass4()
     }
-    console.log(new Date().getTime()-bef)
+    console.log(new Date().getTime()-bef)*/
 
 
 	</script>
