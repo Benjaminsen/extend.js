@@ -54,10 +54,12 @@
 	function superCopy(scope, method){
 		var scopeSuper = scope.super;
 		return method.super = function(){
+			var oldScope = scope.super;
 			scope.super = scopeSuper;
-			return method.apply(scope, arguments);
+			var methodReturn = method.apply(scope, arguments);
+			scope.super = oldScope;
+			return methodReturn;
 		}
-		return method;
 	}
 
 	//Create Class object
